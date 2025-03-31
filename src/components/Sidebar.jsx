@@ -3,29 +3,31 @@ import { useState } from "react";
 import { House, CircleCheckBig, NotebookPen } from "lucide-react";
 import { LuCheckCheck } from "react-icons/lu";
 
-export const Sidebar = () => {
+export const Sidebar = ({ activeTab, setActiveTab, tasks }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Tasks");
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  // Compute pending & completed counts dynamically
+  const pendingTasks = tasks.filter((task) => !task.completed).length;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const closeMenu = () => setIsMenuOpen(false); // Function to close the menu
 
   const menuItems = [
     {
       name: "Tasks",
       icon: <House className="size-5 text-primary" />,
-      count: 20,
+      count: tasks.length,
     },
     {
       name: "Pending",
       icon: <NotebookPen className="size-5 text-secondary" />,
-      count: 18,
+      count: pendingTasks,
     },
     {
       name: "Completed",
       icon: <CircleCheckBig className="size-5 text-accent" />,
-      count: 2,
+      count: completedTasks,
     },
   ];
 
@@ -39,7 +41,6 @@ export const Sidebar = () => {
         onChange={toggleMenu}
       />
       <div className="drawer-content">
-        {/* Open Button */}
         <button
           className="px-4 pt-4 drawer-button md:hidden"
           onClick={toggleMenu}
@@ -52,58 +53,40 @@ export const Sidebar = () => {
         <label
           htmlFor="my-drawer-2"
           className="drawer-overlay"
-          onClick={toggleMenu}
+          onClick={closeMenu}
         ></label>
         <ul className="menu bg-base-200 text-base-content min-h-full w-60 xl:w-70 p-4 space-y-2 md:space-y-4">
-          {/* ==== menu close ==== */}
           <button className="font-bold md:hidden" onClick={toggleMenu}>
             <Menu className="w-5" />
           </button>
 
-          <div className="flex items-center gap-2 py-2 mb-4">
+          <div className="flex items-center gap-2 py-2 mb-8">
             <LuCheckCheck className="animate-pulse size-5 md:size-6" />
             <h1 className="text-xl md:text-2xl font-bold">My Todo-list</h1>
           </div>
 
-          {/* === search === */}
-          <label className="input mb-4">
-            <svg
-              className="h-[1em] opacity-50"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2.5"
-                fill="none"
-                stroke="currentColor"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </g>
-            </svg>
-            <input type="search" placeholder="Search" />
-          </label>
-
-          {/* === sidebar menu === */}
+          {/* Sidebar Menu */}
           {menuItems.map((item) => (
             <li key={item.name}>
               <a
                 className={`flex items-center justify-between ${
-                  activeTab === item.name ? "bg-neutral text-white" : ""
+                  activeTab === item.name ? "bg-base-300" : ""
                 }`}
-                onClick={() => setActiveTab(item.name)}
+                onClick={() => {
+                  setActiveTab(item.name);
+                  closeMenu(); // Close menu after clicking a tab
+                }}
               >
                 <div className="flex items-center gap-2">
                   {item.icon}
                   <p className="text-lg">{item.name}</p>
                 </div>
-                <span className="badge badge-xs">{item.count}</span>
+                {item.name !== "Tasks" && (
+                  <span className="badge badge-xs">{item.count}</span>
+                )}
               </a>
             </li>
           ))}
-
           {/* === theme === */}
           <li className="absolute bottom-0 left-1/2 transform -translate-1/2">
             <label className="flex justify-center cursor-pointer gap-2">

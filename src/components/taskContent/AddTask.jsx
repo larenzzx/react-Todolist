@@ -19,7 +19,7 @@ export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
   };
 
   const handleSubmit = () => {
-    if (!taskInput.title || !taskInput.dueDate) return;
+    if (!taskInput.title.trim() || !taskInput.dueDate.trim()) return;
 
     if (editingTask) {
       setTasks(
