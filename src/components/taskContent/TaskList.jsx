@@ -5,20 +5,22 @@ export const TaskList = ({ tasks, setTasks, setEditingTask }) => {
   const [showCompleted, setShowCompleted] = useState(false);
 
   const handleToggleComplete = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, completed: !task.completed } : task
     );
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   };
 
   const handleDelete = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+    const updatedTasks = tasks.filter((task) => task.id !== id);
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   };
 
   const editTask = (task) => {
     setEditingTask(task);
-    document.getElementById("task-modal").checked = true; 
+    document.getElementById("task-modal").checked = true;
   };
 
   return (
@@ -27,36 +29,39 @@ export const TaskList = ({ tasks, setTasks, setEditingTask }) => {
         {tasks.filter((task) => !task.completed).length > 0 ? (
           tasks
             .filter((task) => !task.completed)
-            .map((task) => (
-              <li key={task.id} className="list-row items-center">
-                <div>
-                  <input
-                    type="checkbox"
-                    className="checkbox checkbox-sm checkbox-primary"
-                    checked={task.completed}
-                    onChange={() => handleToggleComplete(task.id)}
-                  />
-                </div>
-                <div>
-                  <div>{task.title}</div>
-                  <div className="text-xs opacity-60">
-                    Due: {new Date(task.dueDate).toLocaleString()}
+            .map((task) => {
+              const isDue = new Date(task.dueDate) < new Date();
+              return (
+                <li key={task.id} className="list-row items-center">
+                  <div>
+                    <input
+                      type="checkbox"
+                      className="checkbox checkbox-sm checkbox-primary"
+                      checked={task.completed}
+                      onChange={() => handleToggleComplete(task.id)}
+                    />
                   </div>
-                </div>
-                <button
-                  className="btn btn-square btn-error btn-ghost"
-                  onClick={() => editTask(task)}
-                >
-                  <Pencil className="w-4" />
-                </button>
-                <button
-                  className="btn btn-square btn-error btn-ghost"
-                  onClick={() => handleDelete(task.id)}
-                >
-                  <Trash className="w-4" />
-                </button>
-              </li>
-            ))
+                  <div className={`${isDue ? "text-error" : ""}`}>
+                    <div>{task.title}</div>
+                    <div className="text-xs opacity-60">
+                      Due: {new Date(task.dueDate).toLocaleString()}
+                    </div>
+                  </div>
+                  <button
+                    className="btn btn-square btn-error btn-ghost"
+                    onClick={() => editTask(task)}
+                  >
+                    <Pencil className="w-4" />
+                  </button>
+                  <button
+                    className="btn btn-square btn-error btn-ghost"
+                    onClick={() => handleDelete(task.id)}
+                  >
+                    <Trash className="w-4" />
+                  </button>
+                </li>
+              );
+            })
         ) : (
           <li className="p-4 text-sm text-center text-gray-500">
             No pending tasks
@@ -69,11 +74,7 @@ export const TaskList = ({ tasks, setTasks, setEditingTask }) => {
           className="btn bg-base-200 shadow-none"
           onClick={() => setShowCompleted(!showCompleted)}
         >
-          {!showCompleted ? (
-            <ChevronRight className="w-4" />
-          ) : (
-            <ChevronDown className="w-4" />
-          )}
+          {!showCompleted ? <ChevronRight className="w-4" /> : <ChevronDown className="w-4" />}
           Completed
           <span>{tasks.filter((task) => task.completed).length}</span>
         </button>

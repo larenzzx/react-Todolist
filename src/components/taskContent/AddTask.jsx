@@ -3,17 +3,11 @@ import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
-  const [taskInput, setTaskInput] = useState({
-    title: "",
-    dueDate: "",
-  });
+  const [taskInput, setTaskInput] = useState({ title: "", dueDate: "" });
 
   useEffect(() => {
     if (editingTask) {
-      setTaskInput({
-        title: editingTask.title,
-        dueDate: editingTask.dueDate,
-      });
+      setTaskInput({ title: editingTask.title, dueDate: editingTask.dueDate });
     } else {
       setTaskInput({ title: "", dueDate: "" });
     }
@@ -28,7 +22,6 @@ export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
     if (!taskInput.title || !taskInput.dueDate) return;
 
     if (editingTask) {
-      // Update existing task
       setTasks(
         tasks.map((task) =>
           task.id === editingTask.id ? { ...task, ...taskInput } : task
@@ -36,12 +29,7 @@ export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
       );
       setEditingTask(null);
     } else {
-      // Add new task
-      const newTask = {
-        id: uuidv4(),
-        ...taskInput,
-        completed: false,
-      };
+      const newTask = { id: uuidv4(), ...taskInput, completed: false };
       setTasks([...tasks, newTask]);
     }
 
@@ -73,13 +61,13 @@ export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
               value={taskInput.title}
               onChange={handleInput}
               placeholder="Input task"
-              className="input input-bordered w-full mt-2 focus:outline-none focus:scale-100"
+              className="input input-bordered w-full mt-2 focus:outline-none"
               required
             />
           </div>
           <div>
             <label htmlFor="dueDate" className="text-gray-400 text-sm">
-              Date & Time
+              Set Due Date
             </label>
             <input
               id="dueDate"
@@ -87,35 +75,20 @@ export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
               name="dueDate"
               value={taskInput.dueDate}
               onChange={handleInput}
-              className="input input-bordered focus:outline-none focus:scale-100 w-full mt-2"
+              className="input input-bordered focus:outline-none w-full mt-2"
             />
           </div>
-
-          {/* <div>
-            <label htmlFor="category" className="text-gray-400 text-sm">
-              Type of task
-            </label>
-            <select
-              name="category"
-              className="select select-bordered w-full mt-2 focus:outline-none focus:scale-100"
-            >
-              <option value="Personal">Personal</option>
-              <option value="Work">School</option>
-              <option value="Urgent">Urgent</option>
-            </select>
-          </div> */}
-
           <div className="modal-action">
             <label
               htmlFor="task-modal"
-              className="btn btn-primary shadow-none outline-none"
+              className="btn btn-primary"
               onClick={handleSubmit}
             >
               {editingTask ? "Update" : "Add"}
             </label>
             <label
               htmlFor="task-modal"
-              className="btn btn-primary shadow-none outline-none"
+              className="btn btn-primary"
               onClick={() => setEditingTask(null)}
             >
               Cancel

@@ -1,11 +1,23 @@
 import { House } from "lucide-react";
 import { TaskList } from "./taskContent/TaskList";
 import { AddTask } from "./taskContent/AddTask";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const Task = () => {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(() => {
+    try {
+      const storedTasks = JSON.parse(localStorage.getItem("tasks"));
+      return storedTasks || [];
+    } catch {
+      return [];
+    }
+  });
+
   const [editingTask, setEditingTask] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   return (
     <div className="py-2 px-4 md:pt-4 md:px-12 w-full">
