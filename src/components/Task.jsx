@@ -344,6 +344,7 @@ export const Task = () => {
             type="datetime-local"
             name="dueDate"
             className="input input-bordered focus:outline-none focus:scale-100 w-full mt-2 bg-neutral-800"
+            placeholder="Date & Time"
           />
 
           <select
