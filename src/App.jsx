@@ -4,18 +4,27 @@ import { Task } from "./components/Task";
 
 function App() {
   const [activeTab, setActiveTab] = useState("Tasks");
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("tasks")) || [];
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
-    // Load tasks from localStorage when the app starts
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    setTasks(storedTasks);
-  }, []);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   return (
     <div className="h-screen">
       <div className="flex flex-col md:flex-row">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} tasks={tasks} />
+        <Sidebar 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          pendingTasks={tasks.filter((task) => !task.completed).length}
+          completedTasks={tasks.filter((task) => task.completed).length}
+        />        
         <Task activeTab={activeTab} tasks={tasks} setTasks={setTasks} />
       </div>
     </div>
@@ -23,4 +32,3 @@ function App() {
 }
 
 export default App;
-//
