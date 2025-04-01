@@ -1,23 +1,10 @@
 import { House, NotebookPen, CircleCheckBig } from "lucide-react";
 import { TaskList } from "./taskContent/TaskList";
 import { AddTask } from "./taskContent/AddTask";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-export const Task = ({ activeTab }) => {
-  const [tasks, setTasks] = useState(() => {
-    try {
-      const storedTasks = JSON.parse(localStorage.getItem("tasks"));
-      return storedTasks || [];
-    } catch {
-      return [];
-    }
-  });
-
+export const Task = ({ activeTab, tasks, setTasks }) => {
   const [editingTask, setEditingTask] = useState(null);
-
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
 
   let filteredTasks = tasks;
   if (activeTab === "Pending") {

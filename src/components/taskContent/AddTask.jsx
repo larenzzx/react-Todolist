@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import Swal from "sweetalert2";
 
 export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
   const [taskInput, setTaskInput] = useState({ title: "", dueDate: "" });
@@ -27,10 +28,28 @@ export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
           task.id === editingTask.id ? { ...task, ...taskInput } : task
         )
       );
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Task Sucessfully Updated!",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
       setEditingTask(null);
     } else {
       const newTask = { id: uuidv4(), ...taskInput, completed: false };
       setTasks([...tasks, newTask]);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Task Sucessfully Added!",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
     }
 
     setTaskInput({ title: "", dueDate: "" });

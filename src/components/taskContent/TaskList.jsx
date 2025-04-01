@@ -1,5 +1,6 @@
 import { Pencil, Trash, ChevronRight, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 export const TaskList = ({
   tasks,
@@ -11,7 +12,6 @@ export const TaskList = ({
   const [showCompleted, setShowCompleted] = useState(false);
 
   useEffect(() => {
-    // Automatically show completed tasks when activeTab is "Completed"
     if (activeTab === "Completed") {
       setShowCompleted(true);
     } else {
@@ -29,9 +29,26 @@ export const TaskList = ({
   };
 
   const handleDelete = (id) => {
-    const updatedTasks = tasks.filter((task) => task.id !== id);
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your task has been deleted.",
+          icon: "success",
+        });
+        const updatedTasks = tasks.filter((task) => task.id !== id);
+        setTasks(updatedTasks);
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+      }
+    });
   };
 
   const editTask = (task) => {
@@ -51,14 +68,6 @@ export const TaskList = ({
                   const isDue = new Date(task.dueDate) < new Date();
                   return (
                     <li key={task.id} className="list-row items-center">
-                      {/* <div>
-                        <input
-                          type="checkbox"
-                          className="checkbox checkbox-sm checkbox-primary"
-                          checked={task.completed}
-                          onChange={() => handleToggleComplete(task.id)}
-                        />
-                      </div> */}
                       {activeTab !== "Pending" && (
                         <div>
                           <input
@@ -78,7 +87,7 @@ export const TaskList = ({
                       </div>
                       {activeTab !== "Pending" && (
                         <button
-                          className="btn btn-square btn-error btn-ghost"
+                          className="btn btn-square btn-primary btn-ghost"
                           onClick={() => editTask(task)}
                         >
                           <Pencil className="w-4" />
@@ -103,7 +112,7 @@ export const TaskList = ({
         </ul>
       )}
 
-      {/* === SHOW COMPLETED BUTTON (Only in "Tasks" tab) === */}
+      {/* === ALL TASKS === */}
       {activeTab === "Tasks" && (
         <div className="my-2">
           <button
@@ -121,7 +130,7 @@ export const TaskList = ({
         </div>
       )}
 
-      {/* === COMPLETED TASKS LIST (Only shown when toggled or in "Completed" tab) === */}
+      {/* === COMPLETED TASKS LIST === */}
       {(showCompleted || activeTab === "Completed") && (
         <ul className="list bg-base-200 rounded-box shadow-md">
           {tasks.filter((task) => task.completed).length > 0 ? (
@@ -129,7 +138,6 @@ export const TaskList = ({
               .filter((task) => task.completed)
               .map((task) => (
                 <li key={task.id} className="list-row items-center">
-                  {/* Hide checkbox when activeTab is "Completed" */}
                   {activeTab !== "Completed" && (
                     <div>
                       <input
@@ -167,4 +175,3 @@ export const TaskList = ({
     </>
   );
 };
-//
