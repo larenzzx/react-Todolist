@@ -13,16 +13,16 @@ export const Sidebar = ({ activeTab, setActiveTab, pendingTasks, completedTasks 
   const menuItems = [
     {
       name: "Tasks",
-      icon: <House className="size-5 text-primary" />,
+      icon: <House className="size-6 text-primary" />,
     },
     {
       name: "Pending",
-      icon: <NotebookPen className="size-5 text-secondary" />,
+      icon: <NotebookPen className="size-6 text-secondary" />,
       count: pendingTasks,
     },
     {
       name: "Completed",
-      icon: <CircleCheckBig className="size-5 text-accent" />,
+      icon: <CircleCheckBig className="size-6 text-accent" />,
       count: completedTasks,
     },
   ];
@@ -66,19 +66,19 @@ export const Sidebar = ({ activeTab, setActiveTab, pendingTasks, completedTasks 
             <li key={item.name}>
               <a
                 className={`flex items-center justify-between ${
-                  activeTab === item.name ? "bg-base-300" : ""
+                  activeTab === item.name ? "bg-base-300 border-l-2 border-primary" : ""
                 }`}
                 onClick={() => {
                   setActiveTab(item.name);
                   closeMenu();
                 }}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
                   {item.icon}
                   <p className="text-lg">{item.name}</p>
                 </div>
                 {item.name !== "Tasks" && (
-                  <span className="badge badge-xs">{item.count}</span>
+                  <span className="badge badge-base font-semibold">{item.count}</span>
                 )}
               </a>
             </li>
