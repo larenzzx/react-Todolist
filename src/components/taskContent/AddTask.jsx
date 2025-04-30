@@ -8,7 +8,10 @@ export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
 
   useEffect(() => {
     if (editingTask) {
-      setTaskInput({ title: editingTask.title, dueDate: editingTask.dueDate });
+      setTaskInput({
+        title: editingTask.title,
+        dueDate: editingTask.dueDate || "",
+      });
     } else {
       setTaskInput({ title: "", dueDate: "" });
     }
@@ -20,32 +23,39 @@ export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
   };
 
   const handleSubmit = () => {
-    if (!taskInput.title.trim() || !taskInput.dueDate.trim()) return;
+    if (!taskInput.title.trim()) return; 
 
     if (editingTask) {
       setTasks(
         tasks.map((task) =>
-          task.id === editingTask.id ? { ...task, ...taskInput } : task
+          task.id === editingTask.id
+            ? { ...task, ...taskInput, dueDate: taskInput.dueDate || null }
+            : task
         )
       );
       Swal.fire({
         toast: true,
         position: "top-end",
         icon: "success",
-        title: "Task Sucessfully Updated!",
+        title: "Task Successfully Updated!",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
       });
       setEditingTask(null);
     } else {
-      const newTask = { id: uuidv4(), ...taskInput, completed: false };
+      const newTask = {
+        id: uuidv4(),
+        title: taskInput.title,
+        dueDate: taskInput.dueDate || null, 
+        completed: false,
+      };
       setTasks([...tasks, newTask]);
       Swal.fire({
         toast: true,
         position: "top-end",
         icon: "success",
-        title: "Task Sucessfully Added!",
+        title: "Task Successfully Added!",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
@@ -72,7 +82,7 @@ export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
           </h2>
           <div>
             <label htmlFor="title" className="text-gray-400 text-sm">
-              Title
+              Note something
             </label>
             <input
               type="text"
@@ -86,7 +96,7 @@ export const AddTask = ({ tasks, setTasks, editingTask, setEditingTask }) => {
           </div>
           <div>
             <label htmlFor="dueDate" className="text-gray-400 text-sm">
-              Set Due Date
+              Set Due Date (Optional)
             </label>
             <input
               id="dueDate"

@@ -82,7 +82,7 @@ export const TaskList = ({
                       <div className={isDue ? "text-error" : ""}>
                         <div>{task.title}</div>
                         <div className="text-xs opacity-60">
-                          Due: {new Date(task.dueDate).toLocaleString()}
+                          {task.dueDate ? `Due: ${new Date(task.dueDate).toLocaleString()}` : "No due date"}  
                         </div>
                       </div>
                       {activeTab !== "Pending" && (
@@ -152,7 +152,7 @@ export const TaskList = ({
                   <div className="line-through">
                     <div>{task.title}</div>
                     <div className="text-xs opacity-60">
-                      Due: {new Date(task.dueDate).toLocaleString()}
+                      {task.dueDate ? `Due: ${new Date(task.dueDate).toLocaleString()}` : "No due date"}  
                     </div>
                   </div>
                   {activeTab !== "Completed" && (
